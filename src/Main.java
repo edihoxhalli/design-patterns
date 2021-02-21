@@ -5,7 +5,23 @@ import creational.factory.method.ShopFactory;
 import creational.prototype.Animal;
 import creational.prototype.AnimalRegistry;
 import creational.singleton.Connection;
+import structural.adapter.Shape;
+import structural.adapter.Square;
+import structural.adapter.Triangle;
+import structural.adapter.TriangleAdapter;
+import structural.bridge.*;
+import structural.composite.BigBox;
+import structural.composite.Box;
+import structural.composite.CartonBox;
+import structural.composite.PlasticBox;
+import structural.decorator.Bachelors;
+import structural.decorator.Diploma;
+import structural.decorator.HighSchool;
+import structural.decorator.Masters;
+import structural.facade.DriveFacade;
 
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Main {
@@ -21,10 +37,72 @@ public class Main {
 
         /** -- STRUCTURAL --
          */
+//        adapter();
+//        bridge();
+//        composite();
+//        decorator();
+//        facade();
+    }
+
+    static void bridge() {
+        Job teacher = new Teacher();
+        Job musician = new Musician();
+
+        Student mathStudent = new MathStudent(teacher);
+        Student thomYorke = new CantoStudent(musician);
+
+        List<Student> students = Arrays.asList(mathStudent, thomYorke);
+        students.forEach(student -> student.learn());
+    }
+
+    static void adapter(){
+        List<Shape> shapes = new LinkedList<>();
+        Shape square = new Square(2.5F);
+
+        shapes.add(square);
+
+        Triangle t1 = new Triangle(3, 4, 5);
+        Triangle t2 = new Triangle(5, 7, 12);
+
+        Shape t1Adapter = new TriangleAdapter(t1);
+        Shape t2Adapter = new TriangleAdapter(t2);
+
+        shapes.add(t1Adapter);
+        shapes.add(t2Adapter);
+
+        shapes.forEach(s -> {
+            System.out.println(s);
+            System.out.println(s.getArea());
+            System.out.println(s.getPerimeter());
+        });
 
     }
 
+    static void composite(){
+        Box box1 = new CartonBox();
+        Box box2 = new PlasticBox();
 
+        Box bigBox = new BigBox();
+        bigBox.addBox(box1);
+        bigBox.addBox(box2);
+
+        ((BigBox) bigBox).getBoxes().forEach(box -> System.out.println("Box type: " + box.getClass().getSimpleName() + ", Volume: " + box.getVolume()));
+
+        System.out.println("Box type: " + bigBox.getClass().getSimpleName() + ", Volume: " + bigBox.getVolume());
+    }
+
+    static void decorator(){
+        Diploma diploma = new Masters(new Bachelors(new HighSchool()));
+        for (String d:
+                diploma.getDiploma()) {
+            System.out.println(d);
+        }
+    }
+
+    static void facade(){
+        DriveFacade driveFacade = new DriveFacade();
+        driveFacade.drive();
+    }
 
     /** CREATIONAL
      */
