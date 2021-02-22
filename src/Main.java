@@ -1,3 +1,11 @@
+import behavioral.chain_of_responsability.CEO;
+import behavioral.chain_of_responsability.Handler;
+import behavioral.chain_of_responsability.HumanResources;
+import behavioral.chain_of_responsability.Sales;
+import behavioral.command.Command;
+import behavioral.command.Light;
+import behavioral.command.OnCommand;
+import behavioral.command.Switch;
 import creational.builder.Book;
 import creational.factory.abs.AbstractFactory;
 import creational.factory.method.Shop;
@@ -19,6 +27,11 @@ import structural.decorator.Diploma;
 import structural.decorator.HighSchool;
 import structural.decorator.Masters;
 import structural.facade.DriveFacade;
+import structural.flyweight.Catalog;
+import structural.flyweight.InventorySystem;
+import structural.proxy.SecurityProxy;
+import structural.proxy.TwitterService;
+import structural.proxy.TwitterServiceStub;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -42,6 +55,41 @@ public class Main {
 //        composite();
 //        decorator();
 //        facade();
+//        flyweight();
+//        proxy();
+
+        /** -- BEHAVIORAL --
+         */
+//        chainOfResponsability();
+//        command();
+
+    }
+
+    static void command(){
+        Light light = new Light();
+        Switch lightSwitch = new Switch();
+
+        Command onCommand = new OnCommand(light);
+
+        lightSwitch.storeAndExecute(onCommand);
+    }
+
+    static void chainOfResponsability(){
+        CEO ceo = new CEO();
+        Sales sales = new Sales(ceo);
+        HumanResources humanResources = new HumanResources(sales);
+
+        humanResources.handleRequest(Handler.Request.MANAGERIAL);
+        humanResources.handleRequest(Handler.Request.PURCHASE);
+        humanResources.handleRequest(Handler.Request.HR);
+    }
+
+    /** -- STRUCTURAL --
+     */
+    static void proxy(){
+        TwitterService service = (TwitterService) SecurityProxy.newInstance(new TwitterServiceStub());
+        System.out.println(service.getTimeline("asdf"));
+        service.postToTimeline("editwitter", "this will not go through");
     }
 
     static void bridge() {
@@ -104,6 +152,18 @@ public class Main {
         driveFacade.drive();
     }
 
+    static void flyweight(){
+        InventorySystem inventorySystem = new InventorySystem();
+
+        inventorySystem.takeOrder(Catalog.ItemName.BOOK, 123);
+        inventorySystem.takeOrder(Catalog.ItemName.BOOK, 43);
+        inventorySystem.takeOrder(Catalog.ItemName.GAME, 5);
+        inventorySystem.takeOrder(Catalog.ItemName.GAME, 54);
+        inventorySystem.takeOrder(Catalog.ItemName.BOOK, 43);
+
+        inventorySystem.process();
+        inventorySystem.report();
+    }
     /** CREATIONAL
      */
     static void singleton(){
